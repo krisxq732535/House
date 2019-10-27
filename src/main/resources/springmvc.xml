@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+			http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+			http://www.springframework.org/schema/mvc
+			http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd
+			http://www.springframework.org/schema/context
+			http://www.springframework.org/schema/context/spring-context-4.2.xsd ">
+
+    <!--开启注解驱动，扫描包-->
+    <context:component-scan base-package="com.xq.controller,com.xq.procontroller,com.xq.interceptor"></context:component-scan>
+
+    <!--如果在web.xml中dispatcherServlet设置的拦截是‘/’，则需要对静态资源放行-->
+    <!--<mvc:resources mapping="" location=""></mvc:resources>-->
+    <!--开启springmvc的注解驱动-->
+    <mvc:annotation-driven>
+        <!--解决前台传递到过来数据乱码问题-->
+        <mvc:message-converters>
+            <bean id="stringHttpMessageConverter" class="org.springframework.http.converter.StringHttpMessageConverter">
+                <constructor-arg value="utf-8"></constructor-arg>
+            </bean>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+    <!--配置视图解析器-->
+    <bean id="internalResourceViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/page/"></property>
+        <property name="suffix" value=".jsp"></property>
+    </bean>
+    <!--配置文件上传-->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="defaultEncoding" value="utf-8"></property>
+        <property name="maxUploadSizePerFile" value="1048576"></property>
+        <property name="maxUploadSize" value="10485760"></property>
+    </bean>
+
+    <!--配置拦截器-->
+   <!-- <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            <mvc:exclude-mapping path="/page/proUserController/*"></mvc:exclude-mapping>
+            <bean class="com.xq.interceptor.UserInterceptor"></bean>
+        </mvc:interceptor>
+    </mvc:interceptors>-->
+
+</beans>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop.xsd
+       http://www.springframework.org/schema/mvc
+       http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <!--开启注解驱动，扫描包-->
+    <context:component-scan base-package="com.xq.services"></context:component-scan>
+    <!--<mvc:default-servlet-handler/>-->
+
+    <!--加载db.properties文件-->
+    <bean id="placeholderConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <!--<property name="location" value="classpath:database.properties"></property>-->
+        <!--因为可能读取多个配置文件，所以存放到list中-->
+        <property name="locations">
+            <list>
+                <value>classpath:database.properties</value>
+            </list>
+        </property>
+    </bean>
+
+    <!--设置数据源dbcp或者c3p0-->
+    <bean id="basicDataSource" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="${driver}"></property>
+        <property name="url" value="${url}"></property>
+        <property name="username" value="${username}"></property>
+        <property name="password" value="${password}"></property>
+    </bean>
+
+    <!--配置管理mybatis，扫描映射文件xml,sqlMapConfig核心配置文件-->
+    <bean id="sessionFactoryBean" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <!--配置数据源-->
+        <property name="dataSource" ref="basicDataSource"></property>
+        <!--扫描mybatis核心配置文件-->
+        <property name="configLocation" value="classpath:sqlMapConfig.xml"></property>
+        <!--扫描映射文件-->
+        <property name="mapperLocations" value="classpath*:com/xq/mapper/*.xml"></property>
+    </bean>
+
+    <!--扫描mapper接口，把接口和映射文件关联-->
+    <bean id="mapperScannerConfigurer" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage"  value="com.xq.mapper"></property>
+    </bean>
+
+    <!--配置事务管理-->
+    <bean id="dataSourceTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <!--引入数据源-->
+        <property name="dataSource" ref="basicDataSource"></property>
+    </bean>
+    <!--开启事务注解驱动-->
+    <tx:annotation-driven proxy-target-class="true" transaction-manager="dataSourceTransactionManager"></tx:annotation-driven>
+</beans>

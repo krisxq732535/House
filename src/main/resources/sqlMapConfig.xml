@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <!--配置日志输出-->
+<!--    <settings>
+        <setting name="logImpl" value="STDOUT_LOGIN"/>
+    </settings>-->
+    <!--配置别名(扫描实体时)-->
+    <typeAliases>
+        <package name="com.xq.entity"></package>
+    </typeAliases>
+    <!--配置分页拦截器-->
+    <plugins>
+        <plugin interceptor="com.github.pagehelper.PageHelper">
+            <!--设置当在第一页时点击上一页或者最后一页点击下一页不会报错-->
+            <property name="reasonable" value="true"></property>
+        </plugin>
+    </plugins>
+</configuration>
